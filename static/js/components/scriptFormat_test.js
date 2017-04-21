@@ -79,4 +79,54 @@ describe('scriptFormatter', () => {
       expect(result.textContent).to.contain(script);
     }); 
   });
+  describe('location replacement', () => {
+    it('should replace with location', () => {
+      let contact = {
+        name: 'Bozo B. Blowhart',
+        area: 'Senate',
+        party: 'Dem'
+      };
+      let script = 'I am from [CITY, ZIP]. I love [City,State].';
+      let issue = issueDefault;
+      let state = stateDefault;
+      issue['contacts'] = [contact];
+      issue['script'] = script;
+      state['issues'] = issue;
+      state['cachedCity'] = 'Oakland';
+      let result = scriptFormat(issue, state);
+      expect(result.textContent).to.contain('I am from Oakland. I love Oakland.');
+    });
+    it('should not replace with invalid location replacement string', () => {
+      let contact = {
+        name: 'Bozo B. Blowhart',
+        area: 'Senate',
+        party: 'Dem'
+      };
+      let script = 'I am from [CITY,ZIP. I love State.';
+      let issue = issueDefault;
+      let state = stateDefault;
+      issue['contacts'] = [contact];
+      issue['script'] = script;
+      state['issues'] = issue;
+      state['cachedCity'] = 'Oakland';
+      let result = scriptFormat(issue, state);
+      expect(result.textContent).to.contain(script);
+    });    
+    it('should not replace if no cached city', () => {
+      let contact = {
+        name: 'Bozo B. Blowhart',
+        area: 'Senate',
+        party: 'Dem'
+      };
+      let script = 'I am from [CITY,ZIP. I love State.';
+      let issue = issueDefault;
+      let state = stateDefault;
+      issue['contacts'] = [contact];
+      issue['script'] = script;
+      state['issues'] = issue;
+      state['cachedCity'] = '';
+      let result = scriptFormat(issue, state);
+      expect(result.textContent).to.contain(script);
+    });
+  });
 });
