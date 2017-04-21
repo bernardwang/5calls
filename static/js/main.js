@@ -212,7 +212,7 @@ app.model({
     },
     setCachedCity: (state, data) => {
       const response = JSON.parse(data);
-      if (response.normalizedLocation && state.cachedCity == '') {
+      if (response.normalizedLocation) {
         store.replace("org.5calls.geolocation_city", 0, response.normalizedLocation, () => {});
         return { cachedCity: response.normalizedLocation };
       } else {
