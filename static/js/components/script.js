@@ -2,7 +2,7 @@ const html = require('choo/html');
 const t = require('../utils/translation');
 
 const find = require('lodash/find');
-const scriptLine = require('./scriptLine.js');
+const scriptFormat = require('./scriptFormat.js');
 
 module.exports = (state, prev, send) => {
   const issue = find(state.issues, ['id', state.location.params.issueid]);
@@ -13,7 +13,7 @@ module.exports = (state, prev, send) => {
     return html`
       <div class="call__script">
         <h3 class="call__script__header">${t("script.yourScript")}</h3>
-        <div class="call__script__body">${issue.script.split('\n').map((line) => scriptLine(line, state, prev, send))}</div>
+        ${scriptFormat(issue, state, prev, send)}
       </div>`;      
   } else {
     return html``;
