@@ -31,7 +31,7 @@ describe('scriptFormatter', () => {
       issue['script'] = script;
       state['issues'] = issue;
       let result = scriptFormat(issue, state);
-      expect(result.textContent).to.contain('Please vote against Senator Blowhart. It will be bad if you dont vote against Senator Blowhart.');
+      expect(result.textContent).to.contain('Please vote against Senator Bozo B. Blowhart. It will be bad if you dont vote against Senator Bozo B. Blowhart.');
     });
     it('should replace with rep title', () => {
       let contact = {
@@ -46,7 +46,7 @@ describe('scriptFormatter', () => {
       issue['script'] = script;
       state['issues'] = issue;
       let result = scriptFormat(issue, state);
-      expect(result.textContent).to.contain('Please vote against Rep. Blowhart. It will be bad if you dont vote against Rep. Blowhart.');
+      expect(result.textContent).to.contain('Please vote against Rep. Bozo B. Blowhart. It will be bad if you dont vote against Rep. Bozo B. Blowhart.');
     });
     it('should not replace title when not house or senate', () => {
       let contact = {

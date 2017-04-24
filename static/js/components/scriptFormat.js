@@ -15,9 +15,9 @@ module.exports = (issue, state) => {
     let location = state.cachedCity;
     let title = '';
     if (currentContact.area == 'House') {
-      title = 'Rep. ' + currentContact.name.split(' ').pop();
+      title = 'Rep. ' + currentContact.name;
     } else if (currentContact.area == 'Senate') {
-      title = 'Senator ' + currentContact.name.split(' ').pop();
+      title = 'Senator ' + currentContact.name;
     }
 
     if (title) {
@@ -35,4 +35,4 @@ module.exports = (issue, state) => {
       ${format()}
     </div>
   `;
-}
+};
