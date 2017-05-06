@@ -12,58 +12,51 @@ module.exports = (issue, state) => {
   // sen - [SEN NAME], [SENATOR NAME]
   // rep - [REP NAME], [REP'S NAME]
   // attgen - [Attorney General Name]
-  // bill - [Senate: S. 823; House: H.R. 1899], [House- HR 1180, Senate- S 801]
+  // bill1 - [Senate: S. 823; House- HR 1899]
+  // bill2 - [House- H.R. 1180, Senate: S 801]
   const reg = {
     location: /\[CITY,\s?ZIP\]|\[CITY,\s?STATE\]/gi,
     title: /\[REP\/SEN NAME\]|\[SENATOR\/REP NAME\]|\[SEN\/REP NAME\]/gi,
     sen: /\[SEN NAME\]|\[SENATOR NAME\]/gi,
     rep: /\[REP NAME\]|\[REP'S NAME\]/gi,
     attgen: /\[ATTORNEY GENERAL NAME\]/gi,
-  }
-
-  const replace = {
-    location: state.cachedCity,
-    sen: '',
-    rep: '',
-    attgen: '',
-  }
-
-  for (let i = 0; i < issue.contacts.length; i++) {
-    let curr = issue.contacts[i];
-    if (curr.area == 'House') {
-      replace.rep = 'Rep. ' + curr.name;
-    } else if (curr.area == 'Senate') {
-      replace.sen = 'Senator ' + curr.name;
-    } else if (curr.area == 'AttorneyGeneral') {
-      replace.attgen = 'Attorney General ' + curr.name;
-    }
+    bill1: /\[SENATE[:|-]\s?(S.?\s?\d+)[;|,]\s?HOUSE[:|-]\s?(H.?R.?\s?\d+)\]/gi,
+    bill2: /\[HOUSE[:|-]\s?(H.?R.?\s?\d+)[;|,]\s?SENATE[:|-]\s?(S.?\s?\d+)\]/gi,
   }
 
   function format() {
-    let script = issue.script;
+    let replace = {
+      location: state.cachedCity,
+      sen: '',
+      rep: '',
+      attgen: '',
+    }
 
-    let title = '';
     if (currentContact.area == 'House') {
-      title = replace.rep;
+      replace.rep = 'Rep. ' + currentContact.name;
     } else if (currentContact.area == 'Senate') {
-      title = replace.sen;
+      replace.sen = 'Senator ' + currentContact.name;
+    } else if (currentContact.area == 'AttorneyGeneral') {
+      replace.attgen = 'Attorney General ' + currentContact.name;
     }
 
-    if (title) {
-      script = script.replace(reg.title, replace.title);
-      script = script.replace
-    }
-    if (sen) {
-      script = script.replace(reg.sen, replace.sen);
-    }
-    if (rep) {
-      script = script.replace(reg.rep, replace.rep);
-    }
-    if (attgen) {
-      script = script.replace(reg.attgen, replace.attgen);
-    }
-    if (location) {
+    if (replace.location) {
       script = script.replace(reg.location, replace.location);
+    }
+    if (replace.rep) {
+      script = script.replace(reg.title, replace.rep);
+      script = script.replace(reg.rep, replace.rep);
+      script = script.replace(reg.bill1, "$2");
+      script = script.replace(reg.bill2, "$1");
+    } 
+    if (replace.sen) {
+      script = script.replace(reg.title, replace.sen);
+      script = script.replace(reg.sen, replace.sen);
+      script = script.replace(reg.bill1, "$1");
+      script = script.replace(reg.bill2, "$2");
+    }
+    if (replace.attgen) {
+      script = script.replace(reg.attgen, replace.attgen);
     }
 
     return script.split('\n').map((line) => scriptLine(line));
