@@ -14,6 +14,8 @@ module.exports = (issue, state) => {
   // attgen - [Attorney General Name]
   // bill1 - [Senate: S. 823; House- HR 1899]
   // bill2 - [House- H.R. 1180, Senate: S 801]
+  // committee - [IF COMMITTEE, ADD: Please pass my message along to the Chairman.]
+
   const reg = {
     location: /\[CITY,\s?ZIP\]|\[CITY,\s?STATE\]/gi,
     title: /\[REP\/SEN NAME\]|\[SENATOR\/REP NAME\]|\[SEN\/REP NAME\]/gi,
@@ -22,6 +24,7 @@ module.exports = (issue, state) => {
     attgen: /\[ATTORNEY GENERAL NAME\]/gi,
     bill1: /\[SENATE[:|-]\s?(S.?\s?\d+)[;|,]\s?HOUSE[:|-]\s?(H.?R.?\s?\d+)\]/gi,
     bill2: /\[HOUSE[:|-]\s?(H.?R.?\s?\d+)[;|,]\s?SENATE[:|-]\s?(S.?\s?\d+)\]/gi,
+    committee: /\[IF (?:CALLING )?COMMITTEE, ADD:\s?(.*?)\]/gi,
   }
 
   function format() {
@@ -48,15 +51,18 @@ module.exports = (issue, state) => {
       script = script.replace(reg.rep, replace.rep);
       script = script.replace(reg.bill1, "$2");
       script = script.replace(reg.bill2, "$1");
-    } 
-    if (replace.sen) {
+      script = script.replace(reg.committee, "");
+    } else if (replace.sen) {
       script = script.replace(reg.title, replace.sen);
       script = script.replace(reg.sen, replace.sen);
       script = script.replace(reg.bill1, "$1");
       script = script.replace(reg.bill2, "$2");
-    }
-    if (replace.attgen) {
+      script = script.replace(reg.committee, "");
+    } else if (replace.attgen) {
       script = script.replace(reg.attgen, replace.attgen);
+      script = script.replace(reg.committee, "");
+    } else {
+      script = script.replace(reg.committee, "$1");
     }
 
     return script.split('\n').map((line) => scriptLine(line));
