@@ -25,7 +25,7 @@ module.exports = (issue, state) => {
     bill1: /\[SENATE[:|-]\s?(S.?\s?\d+)[;|,]\s?HOUSE[:|-]\s?(H.?R.?\s?\d+)\]/gi,
     bill2: /\[HOUSE[:|-]\s?(H.?R.?\s?\d+)[;|,]\s?SENATE[:|-]\s?(S.?\s?\d+)\]/gi,
     committee: /\[IF (?:CALLING )?COMMITTEE, ADD:\s?(.*?)\]/gi,
-  }
+  };
 
   function format() {
     let replace = {
@@ -33,7 +33,7 @@ module.exports = (issue, state) => {
       sen: '',
       rep: '',
       attgen: '',
-    }
+    };
 
     if (currentContact.area == 'House') {
       replace.rep = 'Rep. ' + currentContact.name;
